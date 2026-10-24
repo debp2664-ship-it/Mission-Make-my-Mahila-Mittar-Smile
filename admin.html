@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deb's Friendship HQ 🕹️ | Private Admin Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs (v10 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <style>
+    :root {
+      --pink-100: #fce7f3;
+      --pink-200: #fbcfe8;
+      --pink-300: #f472b6;
+      --pink-400: #ec4899;
+      --pink-500: #db2777;
+      --lavender-100: #f3e8ff;
+      --lavender-400: #c084fc;
+      --lavender-500: #a855f7;
+      --blue-100: #e0f2fe;
+      --blue-400: #38bdf8;
+      --emerald-100: #d1fae5;
+      --emerald-600: #059669;
+      --text-main: #332941;
+      --text-muted: #6b5e7a;
+      --pill-radius: 9999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(135deg, #fff1f2 0%, #f5f3ff 40%, #e0f2fe 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    /* Glassmorphism Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px -10px rgba(236, 72, 153, 0.12);
+      padding: 2.2rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: var(--pill-radius);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.5);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--text-main);
+      border: 1.5px solid var(--pink-200);
+    }
+    .btn-outline:hover {
+      background: var(--pink-100);
+      border-color: var(--pink-400);
+      color: var(--pink-500);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+      color: white;
+    }
+
+    /* Auth View */
+    .auth-view {
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+
+    .login-icon {
+      font-size: 3.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .login-title {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--pink-500);
+      margin-bottom: 0.4rem;
+    }
+
+    .login-sub {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--pink-200);
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      background: white;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--pink-500);
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2);
+    }
+
+    .auth-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+
+    .simulation-notice {
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+      border-top: 1px dashed var(--pink-200);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .simulation-notice code {
+      background: #fdf2f8;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--pink-500);
+      font-weight: 700;
+    }
+
+    /* Dashboard View */
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding: 1rem 1.6rem;
+      border-radius: var(--pill-radius);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dash-user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-circle {
+      width: 44px;
+      height: 44px;
+      background: var(--pink-100);
+      border: 2px solid var(--pink-300);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .dash-title {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .dash-status {
+      font-size: 0.8rem;
+      color: var(--emerald-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--emerald-600);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--emerald-600);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      font-size: 2.4rem;
+      flex-shrink: 0;
+    }
+
+    .stat-val {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--pink-500);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      background: white;
+      border: 1.5px solid var(--pink-200);
+      border-radius: var(--pill-radius);
+      padding: 6px 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-pill.active, .filter-pill:hover {
+      background: var(--pink-500);
+      border-color: var(--pink-500);
+      color: white;
+    }
+
+    /* Responses Feed */
+    .responses-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .response-item-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid rgba(244, 114, 182, 0.3);
+      border-radius: 20px;
+      padding: 1.8rem;
+      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.08);
+      transition: transform 0.2s;
+    }
+
+    .response-item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(236, 72, 153, 0.15);
+    }
+
+    .item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px dashed var(--pink-200);
+      padding-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sender-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--pink-100), var(--lavender-100));
+      padding: 6px 14px;
+      border-radius: var(--pill-radius);
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--pink-500);
+    }
+
+    .timestamp-badge {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .answer-box {
+      background: var(--pink-100);
+      background: rgba(253, 242, 248, 0.7);
+      border: 1px solid rgba(244, 114, 182, 0.2);
+      border-radius: 14px;
+      padding: 12px 16px;
+    }
+
+    .answer-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .answer-value {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--pink-500);
+    }
+
+    .written-message-box {
+      background: #ffffff;
+      border: 1.5px solid var(--pink-200);
+      border-radius: 16px;
+      padding: 1.4rem 1.6rem;
+      position: relative;
+    }
+
+    .message-lead-label {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .message-content {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .empty-responses-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .empty-title {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+
+    .empty-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ==================== AUTH VIEW (LOGIN SCREEN) ==================== -->
+    <div class="auth-view" id="authView">
+      <div class="login-box glass-card">
+        <div class="login-icon">🔐🌸</div>
+        <h1 class="login-title">Deb's Private HQ</h1>
+        <p class="login-sub">Authorized access only. Enter credentials to view bestie responses.</p>
+
+        <div class="auth-error hidden" id="authErrorMsg"></div>
+
+        <form id="adminLoginForm">
+          <div class="form-group">
+            <label for="adminEmail">Deb's Admin Email:</label>
+            <input type="email" id="adminEmail" class="form-input" placeholder="deb@admin.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPassword">Master Password:</label>
+            <input type="password" id="adminPassword" class="form-input" placeholder="••••••••••••" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="btnLoginSubmit">
+            <span>Sign In to HQ 🚀</span>
+          </button>
+        </form>
+
+        <div class="simulation-notice">
+          <span>💡 <strong>Quick Login Guide:</strong></span><br>
+          In Demo / Local mode, log in using:<br>
+          Email: <code>deb@admin.com</code> | Password: <code>friendship2026</code><br>
+          <em>(Once you add your Firebase keys, it connects securely to Firebase Auth!)</em>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== DASHBOARD VIEW ==================== -->
+    <div class="dashboard-view hidden" id="dashboardView">
+
+      <!-- Header -->
+      <header class="dashboard-header glass-card">
+        <div class="dash-user-info">
+          <div class="avatar-circle">🤡</div>
+          <div>
+            <h2 class="dash-title">Deb Paul • Friendship Mission HQ</h2>
+            <div class="dash-status">
+              <span class="status-dot"></span>
+              <span id="connectionBadge">Connected & Secure 🔒</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-outline" target="_blank" title="View Apology Website">
+            <span>🌐 View Website</span>
+          </a>
+          <button class="btn btn-outline" id="btnRefreshData" title="Refresh incoming messages">
+            <span>🔄 Refresh</span>
+          </button>
+          <button class="btn btn-danger" id="btnLogoutAdmin">
+            <span>🚪 Sign Out</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- KPI Summary Cards -->
+      <div class="stats-grid">
+        <div class="stat-card glass-card">
+          <span class="stat-icon">💌</span>
+          <div>
+            <div class="stat-val" id="statTotalResponses">0</div>
+            <div class="stat-label">Total Responses</div>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <span class="stat-icon">😂</span>
+          <div>
+            <div class="stat-val" id="statSmiledCount">0</div>
+            <div class="stat-label">Smiled or Laughed</div>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <span class="stat-icon">💗</span>
+          <div>
+            <div class="stat-val" id="statWeAreGoodCount">0</div>
+            <div class="stat-label">"We're Good!" Restorations</div>
+          </div>
+        </div>
+
+        <div class="stat-card glass-card">
+          <span class="stat-icon">🥺</span>
+          <div>
+            <div class="stat-val" id="statNeedTimeCount">0</div>
+            <div class="stat-label">Need More Time</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="filter-bar">
+        <div class="filter-buttons">
+          <button class="filter-pill active" data-filter="all">All Responses</button>
+          <button class="filter-pill" data-filter="smiled">Laughed / Smiled 😂</button>
+          <button class="filter-pill" data-filter="good">We're Good 💗</button>
+          <button class="filter-pill" data-filter="time">Needs Time 🥺</button>
+        </div>
+        <div style="font-size: 0.88rem; color: var(--text-muted); font-weight: 600;" id="feedCountLabel">
+          Showing 0 submissions
+        </div>
+      </div>
+
+      <!-- Stream of Responses -->
+      <main class="responses-stream" id="responsesStream">
+        <!-- Rendered dynamically -->
+      </main>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const authView = document.getElementById('authView');
+      const dashboardView = document.getElementById('dashboardView');
+      const adminLoginForm = document.getElementById('adminLoginForm');
+      const authErrorMsg = document.getElementById('authErrorMsg');
+      const btnLogoutAdmin = document.getElementById('btnLogoutAdmin');
+      const btnRefreshData = document.getElementById('btnRefreshData');
+      const responsesStream = document.getElementById('responsesStream');
+
+      const statTotalResponses = document.getElementById('statTotalResponses');
+      const statSmiledCount = document.getElementById('statSmiledCount');
+      const statWeAreGoodCount = document.getElementById('statWeAreGoodCount');
+      const statNeedTimeCount = document.getElementById('statNeedTimeCount');
+      const feedCountLabel = document.getElementById('feedCountLabel');
+
+      let allResponses = [];
+      let activeFilter = 'all';
+
+      // Check current auth status
+      if (typeof getAdminAuthState === 'function') {
+        getAdminAuthState((user) => {
+          if (user) {
+            showDashboard();
+          } else {
+            showLogin();
+          }
+        });
+      }
+
+      function showLogin() {
+        authView.classList.remove('hidden');
+        dashboardView.classList.add('hidden');
+      }
+
+      function showDashboard() {
+        authView.classList.add('hidden');
+        dashboardView.classList.remove('hidden');
+        loadResponses();
+      }
+
+      // Handle Login Form
+      adminLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('adminEmail').value.trim();
+        const password = document.getElementById('adminPassword').value.trim();
+        authErrorMsg.classList.add('hidden');
+
+        try {
+          await loginAdminUser(email, password);
+          showDashboard();
+        } catch (err) {
+          authErrorMsg.textContent = err.message || 'Login failed. Please check credentials.';
+          authErrorMsg.classList.remove('hidden');
+        }
+      });
+
+      // Handle Logout
+      btnLogoutAdmin.addEventListener('click', async () => {
+        await logoutAdminUser();
+        showLogin();
+      });
+
+      // Refresh Data
+      btnRefreshData.addEventListener('click', () => {
+        btnRefreshData.textContent = '⏳ Loading...';
+        loadResponses().then(() => {
+          btnRefreshData.innerHTML = '<span>🔄 Refresh</span>';
+        });
+      });
+
+      // Load responses from Firebase / Local store
+      async function loadResponses() {
+        try {
+          allResponses = await fetchAllResponses();
+          updateKPIs();
+          renderResponses();
+        } catch (err) {
+          console.error("Error fetching responses:", err);
+        }
+      }
+
+      function updateKPIs() {
+        const total = allResponses.length;
+        const smiled = allResponses.filter(r => (r.smileResponse || '').includes('laughed') || (r.smileResponse || '').includes('little bit')).length;
+        const good = allResponses.filter(r => (r.feelingResponse || '').includes('good')).length;
+        const needTime = allResponses.filter(r => (r.feelingResponse || '').includes('time')).length;
+
+        statTotalResponses.textContent = total;
+        statSmiledCount.textContent = `${smiled} (${total > 0 ? Math.round((smiled / total) * 100) : 0}%)`;
+        statWeAreGoodCount.textContent = good;
+        statNeedTimeCount.textContent = needTime;
+      }
+
+      function renderResponses() {
+        let filtered = [...allResponses];
+
+        if (activeFilter === 'smiled') {
+          filtered = filtered.filter(r => (r.smileResponse || '').includes('laughed') || (r.smileResponse || '').includes('little bit'));
+        } else if (activeFilter === 'good') {
+          filtered = filtered.filter(r => (r.feelingResponse || '').includes('good'));
+        } else if (activeFilter === 'time') {
+          filtered = filtered.filter(r => (r.feelingResponse || '').includes('time'));
+        }
+
+        feedCountLabel.textContent = `Showing ${filtered.length} of ${allResponses.length} submissions`;
+
+        if (filtered.length === 0) {
+          responsesStream.innerHTML = `
+            <div class="empty-responses-state glass-card">
+              <div class="empty-icon">📭✨</div>
+              <h3 class="empty-title">No responses match this filter yet!</h3>
+              <p class="empty-sub">
+                Once your friend clicks "Send My Response to Deb 💌" at the end of the apology page, her answer will appear here in real-time.
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        filtered.forEach(item => {
+          let formattedTime = 'Recently';
+          if (item.timestamp) {
+            const dateObj = item.timestamp.toDate ? item.timestamp.toDate() : new Date(item.timestamp);
+            formattedTime = dateObj.toLocaleString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric',
+              hour: 'numeric', minute: '2-digit', hour12: true
+            });
+          }
+
+          const messageText = item.message && item.message.trim() ? item.message.trim() : '<em>(No written message included)</em>';
+
+          html += `
+            <article class="response-item-card">
+              <div class="item-header">
+                <div class="sender-badge">
+                  <span>🌸 Recipient:</span>
+                  <strong>${item.friendName || 'Bestie'}</strong>
+                </div>
+                <div class="timestamp-badge">🕒 ${formattedTime}</div>
+              </div>
+
+              <div class="answers-grid">
+                <div class="answer-box">
+                  <div class="answer-label">1. Did it make her smile?</div>
+                  <div class="answer-value">${item.smileResponse || 'N/A'}</div>
+                </div>
+
+                <div class="answer-box">
+                  <div class="answer-label">2. How is she feeling?</div>
+                  <div class="answer-value">${item.feelingResponse || 'N/A'}</div>
+                </div>
+              </div>
+
+              <div class="written-message-box">
+                <div class="message-lead-label">3. Personal Message for Deb:</div>
+                <div class="message-content">"${messageText}"</div>
+              </div>
+            </article>
+          `;
+        });
+
+        responsesStream.innerHTML = html;
+      }
+
+      // Filter pills
+      const filterPills = document.querySelectorAll('.filter-pill');
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeFilter = pill.dataset.filter;
+          renderResponses();
+        });
+      });
+
+    });
+  </script>
+</body>
+</html>

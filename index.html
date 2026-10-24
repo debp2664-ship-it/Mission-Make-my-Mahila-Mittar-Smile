@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operation: Make My Favorite Human Smile Again! 🥹💗</title>
+  <meta name="description"
+    content="A cute, funny, and heartfelt interactive friendship apology website for an extraordinary friend. Genuine friendship celebration with mini-games, laughs, and sincerity.">
+  <meta name="author" content="Deb Paul">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- GSAP for Smooth Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- html2canvas for High-Res Certificate Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Firebase SDKs (v10 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Floating Background Mesh Particles -->
+  <div class="bg-particles" id="bgParticles" aria-hidden="true"></div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-trail" id="cursorTrail" aria-hidden="true"></div>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-content">
+      <div class="loader-mascot">
+        <span class="mascot-bounce">🧸</span>
+        <span class="heart-pulse">💗</span>
+        <span class="mascot-bounce-alt">🌸</span>
+      </div>
+      <h2 class="loader-title">Operation: Friendship Rescue</h2>
+      <p class="loader-status" id="loaderStatus">Gathering apology courage... 🥹</p>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Floating HUD / Navigation Bar -->
+  <header class="top-nav-hud">
+    <div class="nav-left">
+      <div class="brand-pill" id="brandPill" title="Friendship Mission Status">
+        <span class="live-dot"></span>
+        <span class="brand-text">Mission: Bestie Peace 🕊️</span>
+      </div>
+    </div>
+
+    <!-- Friendship Restoration Progress Indicator -->
+    <div class="friendship-progress-container" title="Friendship Restoration Progress">
+      <span class="progress-label">Friendship Meter:</span>
+      <div class="hud-progress-bar">
+        <div class="hud-progress-fill" id="hudProgressFill"></div>
+      </div>
+      <span class="progress-percent" id="hudProgressPercent">15%</span>
+    </div>
+
+    <div class="nav-right">
+      <!-- Name Customizer Button -->
+      <button class="nav-btn" id="customizeNameBtn" title="Customize Friend's Name" aria-label="Customize Friend Name">
+        <span class="btn-icon">✏️</span>
+        <span class="btn-label" id="navFriendName">Bestie</span>
+      </button>
+
+      <!-- Sound FX Toggle -->
+      <button class="nav-btn" id="sfxToggleBtn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+        <span id="sfxIcon">🔊</span>
+      </button>
+
+      <!-- Background Music Toggle -->
+      <button class="nav-btn music-btn" id="musicToggleBtn" title="Toggle Gentle Lo-Fi Melody"
+        aria-label="Toggle Background Music">
+        <span class="music-bars" id="musicBars">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="music-label">Lofi 🎶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Website Content -->
+  <main class="page-wrapper">
+
+    <!-- ==================== 1. FIRST SCREEN: THE FUNNY WARNING ==================== -->
+    <section class="section hero-section" id="heroSection">
+      <div class="container hero-container">
+
+        <!-- Emergency Alert Banner -->
+        <div class="emergency-badge animate-pulse">
+          <span class="badge-icon">🚨</span>
+          <span class="badge-text">EMERGENCY ALERT!</span>
+          <span class="badge-icon">🚨</span>
+        </div>
+
+        <h1 class="hero-title">
+          Attention, Miss Angry Bird! <span class="angry-bird-inline">🐦💢</span>
+        </h1>
+
+        <div class="hero-warning-card glass-card">
+          <div class="alert-dialogue">
+            <p class="warning-lead">
+              "We have detected a dangerously high level of anger in one very important human."
+            </p>
+            <p class="warning-sub">
+              "Scientists believe the situation can only be solved with unlimited jokes, cute surprises, and one
+              extremely sorry idiot. 🤡"
+            </p>
+          </div>
+
+          <!-- Animated Chibi Worried Deb & Angry Bird Scene -->
+          <div class="character-stage" id="characterStage">
+            <!-- Worried Cartoon Boy (Deb) SVG -->
+            <div class="mascot-wrapper worried-deb" id="worriedDeb">
+              <div class="sweat-drop">💧</div>
+              <svg viewBox="0 0 160 180" class="chibi-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Hair -->
+                <path d="M40 70 Q30 20 80 18 Q130 20 120 70 Q110 50 80 52 Q50 50 40 70 Z" fill="#2d2b38" />
+                <path d="M48 40 Q80 10 115 35 Q105 20 80 20 Q55 20 48 40 Z" fill="#4a4458" />
+                <!-- Head -->
+                <ellipse cx="80" cy="75" rx="42" ry="40" fill="#fed7aa" />
+                <!-- Blush (awkward pink) -->
+                <ellipse cx="56" cy="85" rx="8" ry="5" fill="#fca5a5" opacity="0.6" />
+                <ellipse cx="104" cy="85" rx="8" ry="5" fill="#fca5a5" opacity="0.6" />
+                <!-- Worried Wavy Eyebrows -->
+                <path d="M52 60 Q62 52 72 62" stroke="#2d2b38" stroke-width="3.5" fill="none" stroke-linecap="round" />
+                <path d="M88 62 Q98 52 108 60" stroke="#2d2b38" stroke-width="3.5" fill="none" stroke-linecap="round" />
+                <!-- Nervous Eyes with big pupils -->
+                <ellipse cx="62" cy="72" rx="6" ry="7" fill="#1f2937" />
+                <circle cx="60" cy="70" r="2.5" fill="#ffffff" />
+                <ellipse cx="98" cy="72" rx="6" ry="7" fill="#1f2937" />
+                <circle cx="96" cy="70" r="2.5" fill="#ffffff" />
+                <!-- Nervous Wobbly Mouth -->
+                <path d="M68 96 Q74 92 80 96 Q86 100 92 95" stroke="#991b1b" stroke-width="3" fill="none"
+                  stroke-linecap="round" class="wobbly-mouth" />
+                <!-- Body / Cute Hoodie -->
+                <path d="M50 115 Q30 135 40 170 L120 170 Q130 135 110 115 Z" fill="#93c5fd" />
+                <path d="M68 115 L80 140 L92 115" stroke="#60a5fa" stroke-width="2" fill="#eff6ff" />
+                <!-- Sorry Sign / Hands -->
+                <rect x="42" y="130" width="76" height="34" rx="8" fill="#ffffff" stroke="#f472b6" stroke-width="2.5"
+                  filter="drop-shadow(0 3px 6px rgba(0,0,0,0.1))" />
+                <text x="80" y="152" font-family="'Quicksand', sans-serif" font-weight="700" font-size="13"
+                  fill="#ec4899" text-anchor="middle">I'M SO SORRY 🥺</text>
+                <!-- Chubby hands holding the sign -->
+                <circle cx="42" cy="147" r="9" fill="#fed7aa" />
+                <circle cx="118" cy="147" r="9" fill="#fed7aa" />
+              </svg>
+              <div class="mascot-tag">Deb (Chief Apology Officer 🤡)</div>
+            </div>
+
+            <!-- Miss Angry Bird SVG -->
+            <div class="mascot-wrapper angry-bird-box" id="angryBirdBox">
+              <div class="steam-puff puff-1">💨</div>
+              <div class="steam-puff puff-2">💨</div>
+              <svg viewBox="0 0 140 160" class="chibi-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Bird Body -->
+                <ellipse cx="70" cy="85" rx="48" ry="46" fill="#f87171" />
+                <!-- Belly -->
+                <ellipse cx="70" cy="95" rx="34" ry="28" fill="#fecaca" />
+                <!-- Feather Crest -->
+                <path d="M66 40 Q55 18 68 15 Q75 30 70 40" fill="#dc2626" />
+                <path d="M72 40 Q85 20 80 14 Q70 30 72 40" fill="#ef4444" />
+                <!-- Angry Eyebrows -->
+                <polygon points="35,62 68,76 68,69 38,57" fill="#1e293b" />
+                <polygon points="105,62 72,76 72,69 102,57" fill="#1e293b" />
+                <!-- Eyes -->
+                <ellipse cx="54" cy="78" rx="8" ry="8" fill="#ffffff" />
+                <ellipse cx="56" cy="78" rx="4" ry="4" fill="#0f172a" />
+                <ellipse cx="86" cy="78" rx="8" ry="8" fill="#ffffff" />
+                <ellipse cx="84" cy="78" rx="4" ry="4" fill="#0f172a" />
+                <!-- Beak -->
+                <polygon points="62,86 78,86 70,102" fill="#f59e0b" stroke="#d97706" stroke-width="1.5" />
+                <!-- Wings -->
+                <ellipse cx="26" cy="92" rx="14" ry="18" fill="#ef4444" transform="rotate(-15 26 92)" />
+                <ellipse cx="114" cy="92" rx="14" ry="18" fill="#ef4444" transform="rotate(15 114 92)" />
+                <!-- Little Feet -->
+                <path d="M55 130 L55 142 M50 142 L60 142" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+                <path d="M85 130 L85 142 M80 142 L90 142" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" />
+              </svg>
+              <div class="mascot-tag"><span class="friend-name-placeholder">Bestie</span> (Miss Angry Bird 💢)</div>
+            </div>
+          </div>
+
+          <!-- Hero Choice Prompt -->
+          <div class="hero-prompt">
+            <h3 class="prompt-text">Are you ready to investigate this serious friendship emergency?</h3>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-glow" id="btnInvestigate">
+                <span class="btn-icon">💗</span>
+                <span class="btn-text">Okay, Let's See!</span>
+              </button>
+              <button class="btn btn-secondary" id="btnStillAngry">
+                <span class="btn-icon">🙄</span>
+                <span class="btn-text">I'm Still Angry!</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hidden "Still Angry" Gentle Response Box -->
+          <div class="still-angry-response glass-panel hidden" id="stillAngryResponse">
+            <div class="funny-reaction-icon">😭🤡</div>
+            <p class="reaction-title">
+              "Understandable. Even my last two brain cells are disappointed in me. 😭"
+            </p>
+            <p class="reaction-body">
+              Your anger is 100% valid. No pressure, no rush! But if you're curious to see how far an idiot can go to
+              apologize, take a peek below:
+            </p>
+            <div class="reaction-actions">
+              <button class="btn btn-sm btn-outline" id="btnStressPillow">
+                <span>🥊 Punch Virtual Stress Pillow (Squeak!)</span>
+              </button>
+              <button class="btn btn-sm btn-primary" id="btnGentleContinue">
+                <span>Fine, show me the rest 🙄✨</span>
+              </button>
+            </div>
+            <div class="pillow-counter" id="pillowCounter">Punches registered: 0 (Release the fury!)</div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- Scroll Down Indicator -->
+      <a href="#meterSection" class="scroll-down-hint" aria-label="Scroll to Anger Meter">
+        <span>Scroll to inspect the damage</span>
+        <div class="hint-arrow">⬇️</div>
+      </a>
+    </section>
+
+    <!-- ==================== 2. INTERACTIVE ANGRY METER ==================== -->
+    <section class="section meter-section" id="meterSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">Interactive Thermometer</div>
+          <h2 class="section-title">Let's Check Your Anger Level! 🌡️</h2>
+          <p class="section-subtitle">
+            Warning: Bestie anger level is critically high! 🚨 Every click is clinically proven to help.
+          </p>
+        </div>
+
+        <div class="meter-wrapper glass-card">
+          <!-- Thermometer Visual Representation -->
+          <div class="meter-gauge-area">
+            <div class="gauge-header">
+              <span class="gauge-status-badge" id="gaugeStatusBadge">CRITICAL EMERGENCY 🔥</span>
+              <span class="gauge-number" id="gaugeNumber">100%</span>
+            </div>
+
+            <div class="thermometer-track">
+              <div class="thermometer-fill" id="thermometerFill">
+                <span class="fill-sparkle">✨</span>
+              </div>
+            </div>
+
+            <!-- Tick Marks -->
+            <div class="gauge-ticks">
+              <span>0% (Chill 🌸)</span>
+              <span>25%</span>
+              <span>50%</span>
+              <span>75%</span>
+              <span>100% (Volcano 🌋)</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Funny Message Display -->
+          <div class="meter-quote-box" id="meterQuoteBox">
+            <div class="quote-icon-bubble" id="quoteIconBubble">😭</div>
+            <div class="quote-text-content">
+              <h4 class="quote-headline" id="quoteHeadline">Anger Level: 100%</h4>
+              <p class="quote-message" id="quoteMessage">"Okay, I'm officially in danger. 😭"</p>
+            </div>
+          </div>
+
+          <!-- Meter Action Controls -->
+          <div class="meter-controls">
+            <button class="btn btn-primary btn-large btn-bounce" id="btnReduceAnger">
+              <span class="btn-icon">😂</span>
+              <span class="btn-text">Reduce Anger by 10%</span>
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnResetMeter" title="Need to start over?">
+              <span>🔄 Reset Meter</span>
+            </button>
+          </div>
+
+          <div class="playful-disclaimer">
+            <span>✨ Important Notice:</span> This is a playful fictional meter made to bring a smile. Your real feelings
+            and pace are respected 100%!
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 3. THE REAL APOLOGY LETTER ==================== -->
+    <section class="section letter-section" id="letterSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">From the Bottom of My Heart</div>
+          <h2 class="section-title">Okay, Jokes Apart... 💌</h2>
+          <p class="section-subtitle">
+            Click on the envelope to open a sincere, handwritten message just for you.
+          </p>
+        </div>
+
+        <!-- Interactive 3D Envelope Container -->
+        <div class="envelope-outer-wrap">
+
+          <div class="envelope-container" id="envelopeContainer">
+            <!-- Front Flap and Body -->
+            <div class="envelope" id="envelope">
+              <!-- Back Pocket Inside -->
+              <div class="envelope-back"></div>
+
+              <!-- The Actual Letter Paper -->
+              <div class="letter-paper" id="letterPaper">
+                <div class="letter-decorations">
+                  <span class="decor-flower flower-top-left">🌸</span>
+                  <span class="decor-flower flower-top-right">🌷</span>
+                  <span class="decor-flower flower-bottom-left">🌿</span>
+                  <span class="decor-flower flower-bottom-right">✨</span>
+                </div>
+
+                <div class="letter-header">
+                  <h3 class="letter-salutation">Hey, you! 🌷</h3>
+                  <span class="letter-date" id="letterDate">Today</span>
+                </div>
+
+                <div class="letter-body">
+                  <p>I know you're upset with me, and I understand that I might have said or done something that hurt
+                    you.</p>
+
+                  <p><strong>First of all, I'm genuinely sorry.</strong></p>
+
+                  <p>I never wanted to make you feel bad.</p>
+
+                  <p>You know, some people enter our lives and make ordinary days a little more interesting. You're
+                    definitely one of those people.</p>
+
+                  <p>You're not just someone I talk to when I'm bored. You're someone whose friendship I genuinely
+                    appreciate.</p>
+
+                  <p>Our random conversations, silly jokes, arguments, and countless little moments mean more to me than
+                    you probably realize.</p>
+
+                  <p>I know that saying sorry doesn't magically fix everything. But I hope you know that I care about
+                    our friendship, and I want to do better.</p>
+
+                  <p>You don't have to stop being angry just because I made this website. Take your time.</p>
+
+                  <p>And whenever you're ready, I hope we can laugh together again.</p>
+
+                  <p>Because life is already complicated enough without losing our favorite partner in stupidity. 😂</p>
+                </div>
+
+                <div class="letter-footer">
+                  <p class="sign-off">Your occasionally annoying but genuinely grateful friend,</p>
+                  <p class="signature-deb">Deb 💗</p>
+                </div>
+              </div>
+
+              <!-- Front Wings & Bottom Flap -->
+              <div class="envelope-front-bottom"></div>
+              <div class="envelope-front-left"></div>
+              <div class="envelope-front-right"></div>
+
+              <!-- Flap Top (folds down or up) -->
+              <div class="envelope-flap-top" id="envelopeFlapTop">
+                <div class="wax-seal" id="waxSeal">
+                  <span class="seal-icon">🌸</span>
+                  <span class="seal-tooltip">Click to Open</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="envelope-instruction" id="envelopeInstruction">
+            <span class="tap-hand">👆</span> Click the wax seal to read the letter
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 4. REASONS WHY YOU'RE AN AMAZING FRIEND ==================== -->
+    <section class="section reasons-section" id="reasonsSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">Bestie Appreciation Dossier</div>
+          <h2 class="section-title">Reasons Why You're An Amazing Friend 🧸</h2>
+          <p class="section-subtitle">
+            Scientific, peer-reviewed reasons why our friendship is strictly non-negotiable.
+          </p>
+        </div>
+
+        <div class="cards-grid">
+
+          <!-- Card 1 -->
+          <div class="reason-card glass-card" data-card="1">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">🌸</span>
+            </div>
+            <h3 class="card-title">You Make Ordinary Days Better</h3>
+            <p class="card-desc">
+              "Even a random conversation with you can turn a boring day into something memorable."
+            </p>
+            <div class="card-badge">✨ Day Brightener</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="reason-card glass-card" data-card="2">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">😂</span>
+            </div>
+            <h3 class="card-title">Your Sense of Humor</h3>
+            <p class="card-desc">
+              "Your jokes, reactions, and random nonsense deserve their own comedy show."
+            </p>
+            <div class="card-badge">🎭 Comedy Genius</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="reason-card glass-card" data-card="3">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">💗</span>
+            </div>
+            <h3 class="card-title">Your Friendship Matters</h3>
+            <p class="card-desc">
+              "Some friendships are simply too valuable to take for granted. Ours is one of them."
+            </p>
+            <div class="card-badge">💎 Irreplaceable</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="reason-card glass-card" data-card="4">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">🌻</span>
+            </div>
+            <h3 class="card-title">You're One of a Kind</h3>
+            <p class="card-desc">
+              "Finding someone who understands your weirdness is rare. Finding someone who matches it? Legendary."
+            </p>
+            <div class="card-badge">🦄 1 in 8 Billion</div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="reason-card glass-card" data-card="5">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">🐼</span>
+            </div>
+            <h3 class="card-title">You're My Favorite Troublemaker</h3>
+            <p class="card-desc">
+              "Life would be suspiciously peaceful without our random arguments and ridiculous conversations."
+            </p>
+            <div class="card-badge">💥 Chaos Specialist</div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="reason-card glass-card" data-card="6">
+            <div class="card-glow"></div>
+            <div class="card-icon-wrap">
+              <span class="card-icon">✨</span>
+            </div>
+            <h3 class="card-title">You Deserve Happiness</h3>
+            <p class="card-desc">
+              "Even when things aren't perfect, I hope your days are filled with laughter, peace, and good surprises."
+            </p>
+            <div class="card-badge">🌈 Endless Warmth</div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 5. MINI-GAME: SAVE OUR FRIENDSHIP! ==================== -->
+    <section class="section game-section" id="gameSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">Interactive Rescue Arcade</div>
+          <h2 class="section-title">Help This Idiot Fix His Mistake! 🤡</h2>
+          <p class="section-subtitle">
+            Catch <strong>5 Friendship Hearts (💗)</strong> to save Deb from terminal awkwardness! Collect pizza 🍕 &
+            chocolate 🍫 for bonus points.
+          </p>
+        </div>
+
+        <div class="game-arena-wrapper glass-card">
+
+          <!-- Game HUD -->
+          <div class="game-hud">
+            <div class="hud-stat">
+              <span class="stat-icon">💗</span>
+              <span class="stat-label">Hearts:</span>
+              <span class="stat-value" id="gameHeartsCount">0 / 5</span>
+            </div>
+
+            <div class="hud-stat">
+              <span class="stat-icon">⭐</span>
+              <span class="stat-label">Friendship Score:</span>
+              <span class="stat-value" id="gameScore">0</span>
+            </div>
+
+            <div class="hud-controls">
+              <button class="btn btn-sm btn-outline" id="gameSoundBtn" title="Mute game sounds">
+                <span id="gameSoundIcon">🔊</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live In-game Toast Notification Message -->
+          <div class="game-toast-message" id="gameToastMessage">
+            Catch falling friendship hearts! Move mouse/touch or use Arrow Keys! 🎮
+          </div>
+
+          <!-- Canvas Game Container -->
+          <div class="game-canvas-container" id="gameCanvasContainer">
+            <canvas id="gameCanvas" width="800" height="450"></canvas>
+
+            <!-- Start Game Overlay -->
+            <div class="game-overlay" id="gameStartOverlay">
+              <div class="overlay-modal">
+                <div class="overlay-icon">🎮💗</div>
+                <h3>Friendship Rescue Mission</h3>
+                <p>Move the basket with your mouse, finger, or ⬅️ ➡️ arrow keys. Collect 5 Friendship Hearts (💗)!</p>
+                <button class="btn btn-primary btn-large btn-glow" id="btnStartGame">
+                  <span>Start Mission! 🚀</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Victory Win Overlay -->
+            <div class="game-overlay hidden" id="gameWinOverlay">
+              <div class="overlay-modal win-modal">
+                <div class="trophy-bounce">🏆</div>
+                <h3 class="win-title">YOU WIN! 🏆</h3>
+                <p class="win-lead">"Your reward: One lifetime supply of terrible jokes from Deb."</p>
+                <div class="win-xp-badge">Friendship XP +9999 Max Level! 🎉</div>
+                <div class="overlay-actions">
+                  <button class="btn btn-primary" id="btnPlayAgain">
+                    <span>🔄 Play Again</span>
+                  </button>
+                  <a href="#quizSection" class="btn btn-secondary">
+                    <span>Proceed to Bestie Quiz ➡️</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Mobile Touch Control Buttons -->
+          <div class="mobile-game-touch-controls">
+            <button class="touch-btn" id="btnTouchLeft" aria-label="Move Left">⬅️ Left</button>
+            <button class="touch-btn" id="btnTouchRight" aria-label="Move Right">Right ➡️</button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 6. FUNNY FRIENDSHIP QUIZ ==================== -->
+    <section class="section quiz-section" id="quizSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">100% Unbiased Friendship Test</div>
+          <h2 class="section-title">Funny Friendship Quiz 😂</h2>
+          <p class="section-subtitle">
+            Answer honestly! There are totally no trick questions here... (maybe).
+          </p>
+        </div>
+
+        <div class="quiz-container glass-card">
+
+          <div class="quiz-progress-bar-wrap">
+            <div class="quiz-progress-fill" id="quizProgressFill"></div>
+          </div>
+
+          <div class="quiz-card-body" id="quizCardBody">
+            <!-- Dynamic Question Content injected via JavaScript -->
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 7. OFFICIAL FRIENDSHIP CERTIFICATE ==================== -->
+    <section class="section certificate-section" id="certificateSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">High Distinction Award</div>
+          <h2 class="section-title">Official Friendship Certificate 🏆</h2>
+          <p class="section-subtitle">
+            Legally binding in all dimensions. Customize your name and download your official badge!
+          </p>
+        </div>
+
+        <!-- Customizer Bar -->
+        <div class="cert-controls-bar">
+          <label for="certFriendInput">Recipient's Royal Name:</label>
+          <div class="input-with-button">
+            <input type="text" id="certFriendInput" value="My Dearest Bestie" placeholder="Enter your name here..."
+              maxlength="35">
+            <button class="btn btn-sm btn-primary" id="btnUpdateCertName">Update Badge ✨</button>
+          </div>
+        </div>
+
+        <!-- Certificate Frame (Exported to PNG) -->
+        <div class="certificate-wrapper" id="certificateToDownload">
+          <div class="certificate-inner-border">
+
+            <!-- Corner Filigrees -->
+            <div class="cert-corner corner-tl">🌸</div>
+            <div class="cert-corner corner-tr">🌸</div>
+            <div class="cert-corner corner-bl">🌸</div>
+            <div class="cert-corner corner-br">🌸</div>
+
+            <div class="cert-top-crest">
+              <span class="crest-icon">🏛️</span>
+              <span class="crest-subtitle">OFFICIAL DIPLOMATIC EMBASSY OF BEST FRIENDS</span>
+            </div>
+
+            <h2 class="cert-title">CERTIFICATE OF AWESOMENESS</h2>
+            <div class="cert-subheading">THIS SPECIAL HONOUR IS PROUDLY CONFERRED UPON</div>
+
+            <div class="cert-recipient-name" id="certRecipientDisplay">
+              My Dearest Bestie
+            </div>
+
+            <p class="cert-description">
+              "For being an absolutely amazing human, a legendary friend, and an important member of the
+              <strong>International Association of People Who Tolerate Deb's Nonsense.</strong>"
+            </p>
+
+            <div class="cert-signatures-row">
+
+              <div class="cert-sign-col">
+                <div class="sign-line cursive-sign">Deb Paul</div>
+                <div class="sign-label">Awarded by: <strong>Deb Paul</strong></div>
+                <div class="sign-title">(Reformed Troublemaker & Best Friend)</div>
+              </div>
+
+              <!-- Animated Golden Seal -->
+              <div class="cert-golden-seal">
+                <div class="seal-medallion">
+                  <div class="seal-inner-circle">
+                    <span class="seal-stars">⭐ 100% ⭐</span>
+                    <span class="seal-main-text">AWESOME</span>
+                    <span class="seal-sub-text">FRIEND ✨</span>
+                  </div>
+                </div>
+                <div class="seal-ribbon left"></div>
+                <div class="seal-ribbon right"></div>
+              </div>
+
+              <div class="cert-sign-col">
+                <div class="sign-line date-sign" id="certDateDisplay">October 24, 2026</div>
+                <div class="sign-label">Date of Official Verification</div>
+                <div class="sign-title">(Guaranteed Lifetime Validity ♾️)</div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Download Button -->
+        <div class="cert-download-actions text-center">
+          <button class="btn btn-primary btn-large btn-glow" id="btnDownloadCert">
+            <span class="btn-icon">📜</span>
+            <span class="btn-text">Download My Certificate</span>
+          </button>
+          <p class="download-note">Instant high-resolution PNG format. Ready to frame or show off!</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 8. SECRET SURPRISE BOX ==================== -->
+    <section class="section surprise-section" id="surpriseSection">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <div class="section-tag">Special Delivery</div>
+          <h2 class="section-title">One Last Surprise for You! 🎁</h2>
+          <p class="section-subtitle">
+            Do not shake too hard... someone cute is waiting inside!
+          </p>
+        </div>
+
+        <div class="surprise-box-card glass-card">
+
+          <!-- Animated Gift Box -->
+          <div class="gift-box-stage" id="giftBoxStage">
+
+            <div class="gift-box-3d" id="giftBox3D">
+              <!-- Lid with Bow -->
+              <div class="box-lid" id="boxLid">
+                <div class="box-bow">
+                  <div class="bow-loop loop-left"></div>
+                  <div class="bow-loop loop-right"></div>
+                  <div class="bow-center"></div>
+                </div>
+                <div class="lid-ribbon"></div>
+              </div>
+
+              <!-- Base of the box -->
+              <div class="box-base">
+                <div class="base-ribbon-v"></div>
+                <div class="base-ribbon-h"></div>
+              </div>
+
+              <!-- Hidden Panda Character inside box -->
+              <div class="panda-inside" id="pandaInside">
+                <svg viewBox="0 0 160 160" class="chibi-panda-svg" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Ears -->
+                  <circle cx="45" cy="40" r="18" fill="#1f2937" />
+                  <circle cx="115" cy="40" r="18" fill="#1f2937" />
+                  <!-- Head -->
+                  <ellipse cx="80" cy="75" rx="48" ry="42" fill="#ffffff" stroke="#f1f5f9" stroke-width="2" />
+                  <!-- Eye Patches -->
+                  <ellipse cx="58" cy="72" rx="14" ry="12" fill="#1f2937" transform="rotate(-15 58 72)" />
+                  <ellipse cx="102" cy="72" rx="14" ry="12" fill="#1f2937" transform="rotate(15 102 72)" />
+                  <!-- Eyes -->
+                  <circle cx="60" cy="70" r="5" fill="#ffffff" />
+                  <circle cx="62" cy="70" r="2.5" fill="#0f172a" />
+                  <circle cx="100" cy="70" r="5" fill="#ffffff" />
+                  <circle cx="98" cy="70" r="2.5" fill="#0f172a" />
+                  <!-- Cute Nose -->
+                  <ellipse cx="80" cy="84" rx="6" ry="4" fill="#1f2937" />
+                  <!-- Smile -->
+                  <path d="M72 90 Q80 97 88 90" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round" />
+                  <!-- Rosy Blush Cheeks -->
+                  <circle cx="48" cy="84" r="8" fill="#fda4af" opacity="0.7" />
+                  <circle cx="112" cy="84" r="8" fill="#fda4af" opacity="0.7" />
+                  <!-- Body and Paws holding heart -->
+                  <ellipse cx="80" cy="135" rx="42" ry="25" fill="#ffffff" />
+                  <!-- Paws -->
+                  <circle cx="52" cy="120" r="14" fill="#1f2937" />
+                  <circle cx="108" cy="120" r="14" fill="#1f2937" />
+                  <!-- Heart held in paws -->
+                  <path
+                    d="M80 128 C70 115 55 120 55 130 C55 140 70 148 80 155 C90 148 105 140 105 130 C105 120 90 115 80 128 Z"
+                    fill="#ec4899" />
+                </svg>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="box-action-wrap" id="boxActionWrap">
+            <button class="btn btn-primary btn-large btn-glow btn-shake" id="btnOpenSurprise">
+              <span class="btn-icon">🎁</span>
+              <span class="btn-text">Open Your Surprise!</span>
+            </button>
+          </div>
+
+          <!-- Revealed Surprise Message Container -->
+          <div class="revealed-surprise glass-panel hidden" id="revealedSurprise">
+            <h3 class="surprise-shout">SURPRISEEEE! 🐼💗</h3>
+
+            <div class="surprise-affirmations">
+              <p class="affirm-lead">"Just a little reminder..."</p>
+              <div class="affirmation-pill">🌸 You matter.</div>
+              <div class="affirmation-pill">💭 Your feelings matter.</div>
+              <div class="affirmation-pill">✨ Your happiness matters.</div>
+              <div class="affirmation-pill">💗 And your friendship means a lot to me.</div>
+              <p class="affirm-closing">"Thank you for being such a wonderful friend. 🌷"</p>
+            </div>
+
+            <!-- Virtual Chocolate Treat Box -->
+            <div class="virtual-chocolate-section">
+              <h4 class="chocolate-heading">"Now please accept this virtual chocolate. 🍫"</h4>
+              <p class="choc-sub">Tap on any chocolate piece to unwrap a special sweet compliment:</p>
+
+              <div class="chocolate-box">
+                <div class="choc-piece"
+                  data-compliment="🍫 Golden Milk Chocolate: 'You have a heart of pure gold and the patience of a saint for putting up with me!'">
+                  <span class="choc-symbol">🍫</span>
+                  <span class="choc-flavor">Milk Choc</span>
+                </div>
+                <div class="choc-piece"
+                  data-compliment="🍓 Strawberry Truffle: 'Your laugh is literally the sweetest thing ever. May you smile always!'">
+                  <span class="choc-symbol">🍬</span>
+                  <span class="choc-flavor">Strawberry Truffle</span>
+                </div>
+                <div class="choc-piece"
+                  data-compliment="🌰 Hazelnut Praline: 'You are tough, wise, brilliant, and completely irreplaceable as a friend.'">
+                  <span class="choc-symbol">🌰</span>
+                  <span class="choc-flavor">Hazelnut Crunch</span>
+                </div>
+              </div>
+
+              <div class="choc-compliment-toast" id="chocComplimentToast">
+                Tap a chocolate above to taste the compliment! ✨
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 9. THE FINAL FRIENDSHIP SCREEN ==================== -->
+    <section class="section final-section" id="finalSection">
+      <div class="container final-container">
+
+        <div class="final-card glass-card">
+
+          <!-- Cute Panda Holding a Sign -->
+          <div class="final-panda-stage">
+            <div class="panda-sign-holder" id="pandaSignHolder">
+              <svg viewBox="0 0 200 210" class="panda-huge-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Panda Body -->
+                <ellipse cx="100" cy="155" rx="58" ry="45" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" />
+                <!-- Panda Feet -->
+                <ellipse cx="65" cy="185" rx="20" ry="14" fill="#1e293b" />
+                <ellipse cx="135" cy="185" rx="20" ry="14" fill="#1e293b" />
+                <circle cx="65" cy="185" r="6" fill="#f472b6" opacity="0.6" />
+                <circle cx="135" cy="185" r="6" fill="#f472b6" opacity="0.6" />
+                <!-- Ears -->
+                <circle cx="55" cy="55" r="22" fill="#1e293b" />
+                <circle cx="145" cy="55" r="22" fill="#1e293b" />
+                <circle cx="55" cy="55" r="10" fill="#334155" />
+                <circle cx="145" cy="55" r="10" fill="#334155" />
+                <!-- Head -->
+                <ellipse cx="100" cy="95" rx="60" ry="52" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" />
+                <!-- Eye Patches -->
+                <ellipse cx="72" cy="90" rx="18" ry="15" fill="#1e293b" transform="rotate(-15 72 90)" />
+                <ellipse cx="128" cy="90" rx="18" ry="15" fill="#1e293b" transform="rotate(15 128 90)" />
+                <!-- Big sparkly puppy eyes -->
+                <ellipse cx="74" cy="88" rx="8" ry="9" fill="#ffffff" />
+                <circle cx="76" cy="87" r="5" fill="#0f172a" />
+                <circle cx="72" cy="85" r="2.5" fill="#ffffff" />
+                <ellipse cx="126" cy="88" rx="8" ry="9" fill="#ffffff" />
+                <circle cx="124" cy="87" r="5" fill="#0f172a" />
+                <circle cx="128" cy="85" r="2.5" fill="#ffffff" />
+                <!-- Nose & Cute Mouth -->
+                <ellipse cx="100" cy="106" rx="8" ry="5" fill="#1e293b" />
+                <path d="M92 114 Q100 122 108 114" stroke="#1e293b" stroke-width="3" fill="none"
+                  stroke-linecap="round" />
+                <!-- Blushing Cheeks -->
+                <circle cx="58" cy="106" r="10" fill="#f472b6" opacity="0.6" />
+                <circle cx="142" cy="106" r="10" fill="#f472b6" opacity="0.6" />
+                <!-- Arms / Paws holding sign -->
+                <ellipse cx="48" cy="130" rx="14" ry="18" fill="#1e293b" transform="rotate(25 48 130)" />
+                <ellipse cx="152" cy="130" rx="14" ry="18" fill="#1e293b" transform="rotate(-25 152 130)" />
+                <!-- Heart on sign -->
+                <circle cx="100" cy="138" r="8" fill="#ec4899" />
+              </svg>
+            </div>
+          </div>
+
+          <h2 class="final-heading">So... Are We Okay? 🥹💗</h2>
+
+          <div class="final-speech-message">
+            <p>
+              "I know a website can't erase a mistake.
+            </p>
+            <p>
+              But I made this little corner of the internet because I wanted to remind you that our friendship matters
+              to me.
+            </p>
+            <p>
+              Whether you're smiling right now or still a little upset, I hope this made your day even slightly better.
+            </p>
+            <p>
+              And no matter what, thank you for being you. 🌸"
+            </p>
+          </div>
+
+          <!-- 3 Decision Buttons -->
+          <div class="final-decision-buttons">
+            <button class="btn btn-primary btn-large btn-decision" id="btnWeAreGood">
+              <span class="btn-icon">💗</span>
+              <span class="btn-text">We're Good!</span>
+            </button>
+            <button class="btn btn-secondary btn-large btn-decision" id="btnNeedTime">
+              <span class="btn-icon">🥺</span>
+              <span class="btn-text">I Need Some Time</span>
+            </button>
+            <button class="btn btn-outline btn-large btn-decision" id="btnTellJoke">
+              <span class="btn-icon">😂</span>
+              <span class="btn-text">Tell Me Another Joke!</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Response Feedback Box -->
+          <div class="final-feedback-container hidden" id="finalFeedbackContainer">
+            <!-- Injected via JavaScript based on chosen button -->
+          </div>
+
+          <!-- Extra Friendship Easter Egg: Friendship Voucher Pack -->
+          <div class="easter-egg-vouchers">
+            <h4 class="vouchers-title">🎟️ Official Friendship Peace Vouchers</h4>
+            <p class="vouchers-subtitle">Redeemable whenever you need Deb to step up:</p>
+            <div class="voucher-tags-row">
+              <div class="voucher-chip" title="Click to claim">☕ 1x Free Beverage of Your Choice</div>
+              <div class="voucher-chip" title="Click to claim">👂 1x Unlimited Venting & Listening Session</div>
+              <div class="voucher-chip" title="Click to claim">🛡️ 1x 'Deb Must Agree With You' Free Pass</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 10. FRIENDSHIP RESPONSE SYSTEM ==================== -->
+    <section class="section response-section" id="responseSection">
+      <div class="container response-container">
+
+        <div class="response-card glass-card">
+          <div class="section-tag">Direct Bestie Hotline 📮</div>
+          <h2 class="section-title">Hey! One Last Thing... 💗</h2>
+          <p class="section-subtitle">
+            "I'd love to know what you think about this little surprise!"
+          </p>
+
+          <!-- Hidden iframe to handle cross-origin HTML form POST seamlessly -->
+          <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" tabindex="-1"
+            aria-hidden="true"></iframe>
+
+          <form id="friendshipResponseForm"
+            action="https://script.google.com/macros/s/AKfycbygAohkaadRu51f4R8ms87Ez48s095HIvbkbdTWAle45Kbtaq9ruA8BTGO1gmjM7Ofb/exec"
+            method="POST" target="hidden_iframe" class="friendship-form">
+
+            <!-- Question 1: Did I make you smile? (field: smile) -->
+            <div class="form-question-group">
+              <label class="question-label">
+                <span class="q-num">1.</span> Did I make you smile?
+              </label>
+              <div class="options-choice-grid">
+                <label class="choice-option-card">
+                  <input type="radio" name="smile" value="Yes, I laughed! 😂" required>
+                  <div class="choice-content">
+                    <span class="choice-icon">😂</span>
+                    <span class="choice-text">Yes, I laughed!</span>
+                  </div>
+                </label>
+                <label class="choice-option-card">
+                  <input type="radio" name="smile" value="A little bit! 😊">
+                  <div class="choice-content">
+                    <span class="choice-icon">😊</span>
+                    <span class="choice-text">A little bit!</span>
+                  </div>
+                </label>
+                <label class="choice-option-card">
+                  <input type="radio" name="smile" value="Nice try, idiot! 🙄">
+                  <div class="choice-content">
+                    <span class="choice-icon">🙄</span>
+                    <span class="choice-text">Nice try, idiot!</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Question 2: Are you still angry with me? (field: mood) -->
+            <div class="form-question-group">
+              <label class="question-label">
+                <span class="q-num">2.</span> Are you still angry with me?
+              </label>
+              <div class="options-choice-grid">
+                <label class="choice-option-card">
+                  <input type="radio" name="mood" value="We're good! 💗" required>
+                  <div class="choice-content">
+                    <span class="choice-icon">💗</span>
+                    <span class="choice-text">We're good!</span>
+                  </div>
+                </label>
+                <label class="choice-option-card">
+                  <input type="radio" name="mood" value="I need some time. 🥺">
+                  <div class="choice-content">
+                    <span class="choice-icon">🥺</span>
+                    <span class="choice-text">I need some time.</span>
+                  </div>
+                </label>
+                <label class="choice-option-card">
+                  <input type="radio" name="mood" value="Still angry, but this was funny! 😂">
+                  <div class="choice-content">
+                    <span class="choice-icon">😂</span>
+                    <span class="choice-text">Still angry, but this was funny!</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Question 3: Any message for Deb? (field: message) -->
+            <div class="form-question-group">
+              <label class="question-label" for="friendPersonalMessage">
+                <span class="q-num">3.</span> Any message for Deb?
+              </label>
+              <div class="textarea-wrap">
+                <textarea id="friendPersonalMessage" name="message" rows="4"
+                  placeholder="Speak your mind freely! Roast me, share your honest thoughts, or say whatever you feel... it's all welcome! 🌷"
+                  maxlength="1000"></textarea>
+                <div class="char-counter"><span id="charCount">0</span>/1000</div>
+              </div>
+            </div>
+
+            <!-- Transparent Visitor Disclosure -->
+            <div class="privacy-reassurance">
+              <span class="privacy-lock">💌</span>
+              <span><strong>Notice:</strong> Your answers and message will be sent directly to Deb. This form is 100%
+                optional!</span>
+            </div>
+
+            <!-- Submission Status Feedback (shows while sending or in case of error) -->
+            <div class="submission-feedback-msg hidden" id="submissionFeedbackMsg"></div>
+
+            <!-- Submit Button -->
+            <div class="form-submit-wrap">
+              <button type="submit" class="btn btn-primary btn-large btn-glow" id="btnSubmitResponse">
+                <span class="btn-icon">💌</span>
+                <span class="btn-text">Send My Answers to Deb 💌</span>
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Success Card (Revealed after verified delivery) -->
+          <div class="response-success-card glass-panel hidden" id="responseSuccessCard">
+            <div class="success-animation-icon">📬✨</div>
+            <h3 class="success-title">Message delivered successfully! 💗</h3>
+            <p class="success-subtitle">"Thank you for sharing your thoughts!"</p>
+            <p class="success-note">
+              Your response has been sent directly to Deb's Google Sheet. Regardless of what you're feeling, thank you
+              for being such an extraordinary friend! 🌸
+            </p>
+            <div class="success-badge-confirmed">
+              <span>✓ Sent to Deb's Google Sheet</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer text-center">
+      <div class="container">
+        <p class="footer-note">
+          Crafted with 💖, sincere apologies, and approximately 1.5 remaining brain cells by <strong>Deb Paul</strong>
+        </p>
+        <p class="footer-sub">
+          Dedicated to my awesome friend • Celebrating genuine friendship • <span id="currentYear">2026</span>
+        </p>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Name Customization Modal Dialog -->
+  <div class="modal-backdrop hidden" id="nameModal">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Personalize This Experience 🌸</h3>
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Enter your friend's name or nickname so the entire apology adventure speaks directly to her:</p>
+        <div class="form-group">
+          <input type="text" id="friendNameInput" placeholder="e.g. Maya, Ananya, Bestie..." maxlength="30"
+            class="input-text">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="modalSaveBtn">Save & Apply ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
